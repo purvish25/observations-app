@@ -3,6 +3,8 @@ package com.observations.controller;
 import com.observations.model.Observation;
 import com.observations.repository.ObservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +28,7 @@ public class ObservationController {
     }
 
     @PutMapping("/{id}")
-    public Observation updateObservation(@PathVariable Long id, @RequestBody Observation observation) {
+    public ResponseEntity<?> updateObservation(@PathVariable Long id, @RequestBody Observation observation) {
         Optional<Observation> optionalObservation = observationRepository.findById(id);
 
         if (optionalObservation.isPresent()) {
@@ -36,10 +38,10 @@ public class ObservationController {
             existingObservation.setPatient(observation.getPatient());
             existingObservation.setValue(observation.getValue());
             existingObservation.setUnit(observation.getUnit());
-
-            return observationRepository.save(existingObservation);
+            observationRepository.save(existingObservation);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return null; // Handle the not-found case appropriately
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Handle the not-found case appropriately
         }
     }
 
