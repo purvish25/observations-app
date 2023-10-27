@@ -23,8 +23,12 @@ public class ObservationController {
     }
 
     @PostMapping
-    public Observation createObservation(@RequestBody Observation observation) {
-        return observationRepository.save(observation);
+    public ResponseEntity<?> createObservation(@RequestBody Observation observation) {
+        if (observation != null) {
+            observationRepository.save(observation);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/{id}")
