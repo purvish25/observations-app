@@ -10,15 +10,15 @@ RUN apt-get update && \
 
 # Build the project and create a jar
 WORKDIR /app/observations-app
-RUN mvn clean package
+RUN mvn clean -DskipTests package
+
 
 # Stage 2: Create final image and run
 FROM openjdk:17-jdk-slim
 
-
+WORKDIR /app
 # Copy the jar from the previous stage
-COPY --from=build /app/observations-app/target/observations-app-*.jar /app/app.jar
-
+COPY --from=build /app/observations-app/target/observations-*.jar /app/app.jar
 EXPOSE 8080
 
 CMD ["java", "-jar", "app.jar"]
